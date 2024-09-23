@@ -10,3 +10,5 @@ class ResponseMessage:
                            "message": "User already exists"}
     NOT_ENOUGH_DATA_FOR_CREATE = {"success": False,
                                   "message": "Email, password and name are required fields"}
+    EMAIL_OR_PASSWORD_ARE_INCORRECT = {"success": False,
+                                       "message": "email or password are incorrect"}
