@@ -1,4 +1,3 @@
-import random
 import pytest
 import allure
 from api_shop import ApiRequests, ApiBodyBuilder
@@ -7,10 +6,9 @@ from data import Ingredients, ResponseMessage
 
 class TestCreateOrder:
     @allure.title("Cоздания заказа c ингредиентами для авторизованного пользователя")
-    @pytest.mark.parametrize('ingredients', [[random.choice(Ingredients.BUNS)],
-                                             [random.choice(Ingredients.BUNS), random.choice(Ingredients.INGREDIENTS)],
-                                             [random.choice(Ingredients.BUNS), random.choice(Ingredients.INGREDIENTS),
-                                              random.choice(Ingredients.INGREDIENTS)]])
+    @pytest.mark.parametrize('ingredients', [[Ingredients.BUN],
+                                             [Ingredients.BUN, Ingredients.INGREDIENT],
+                                             [Ingredients.BUN, Ingredients.INGREDIENT, Ingredients.INGREDIENT]])
     def test_create_order(self, authorized_user, ingredients):
         order_body = ApiBodyBuilder.order_body(ingredients)
         response = ApiRequests.create_order(authorized_user.token, order_body)
@@ -18,10 +16,9 @@ class TestCreateOrder:
         assert response.json()['success']
 
     @allure.title("Cоздания заказа c ингредиентами для неавторизованного пользователя")
-    @pytest.mark.parametrize('ingredients', [[random.choice(Ingredients.BUNS)],
-                                             [random.choice(Ingredients.BUNS), random.choice(Ingredients.INGREDIENTS)],
-                                             [random.choice(Ingredients.BUNS), random.choice(Ingredients.INGREDIENTS),
-                                              random.choice(Ingredients.INGREDIENTS)]])
+    @pytest.mark.parametrize('ingredients', [[Ingredients.BUN],
+                                             [Ingredients.BUN, Ingredients.INGREDIENT],
+                                             [Ingredients.BUN, Ingredients.INGREDIENT, Ingredients.INGREDIENT]])
     def test_create_order_without_sign_in(self, authorized_user, ingredients):
         order_body = ApiBodyBuilder.order_body(ingredients)
         token = ''
@@ -38,7 +35,7 @@ class TestCreateOrder:
 
     @allure.title("Создание заказа с неправильным id ингрeдиента")
     def test_create_order_error_id_ingredient(self, authorized_user):
-        order_body = ApiBodyBuilder.order_body([f'{random.choice(Ingredients.INGREDIENTS)}f'])
+        order_body = ApiBodyBuilder.order_body([f'{Ingredients.INGREDIENT}f'])
         response = ApiRequests.create_order(authorized_user.token, order_body)
         assert response.status_code == 500
         assert ResponseMessage.INTERNAL_SERVER_ERROR in response.text

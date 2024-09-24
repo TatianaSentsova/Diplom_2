@@ -1,3 +1,6 @@
+import random
+
+
 class Url:
     STELLAR_BURGERS_URL = 'https://stellarburgers.nomoreparties.site/'
     ENDPOINT_CREATING_USER = '/api/auth/register'
@@ -35,3 +38,5 @@ class Ingredients:
                    '61c0c5a71d1f82001bdaaa78',
                    '61c0c5a71d1f82001bdaaa79',
                    '61c0c5a71d1f82001bdaaa7a']
+    BUN = random.choice(BUNS)
+    INGREDIENT = random.choice(INGREDIENTS)
