@@ -47,3 +47,7 @@ class ApiRequests:
         return requests.post(f'{Url.STELLAR_BURGERS_URL}{Url.ENDPOINT_ORDER}',
                              headers={'Authorization': token},
                              json=order_body)
+    @staticmethod
+    def get_user_orders(token):
+        return requests.get(f'{Url.STELLAR_BURGERS_URL}{Url.ENDPOINT_ORDER}',
+                            headers={'Authorization': token})
