@@ -13,7 +13,7 @@ class TestCreatingCourier:
         assert response.json()['success']
 
     @allure.title("Невозможно создать пользователя, который уже зарегистрирован")
-    def test_creating_same_user(self, request_user_body):
+    def test_creating_same_user_failed(self, request_user_body):
         ApiRequests.create_user(request_user_body)
         response = ApiRequests.create_user(request_user_body)
         assert response.status_code == 403
@@ -23,7 +23,7 @@ class TestCreatingCourier:
     @pytest.mark.parametrize('email, password, name', [['', FakeData.password(), FakeData.name()],
                                                        [FakeData.email(), '', FakeData.name()],
                                                        [FakeData.email(), FakeData.password(), '']])
-    def test_creating_user_without_required_field(self, email, password, name):
+    def test_creating_user_without_required_field_failed(self, email, password, name):
         body_user = ApiBodyBuilder.build_user_body(email, password, name)
         response = ApiRequests.create_user(body_user)
         assert response.status_code == 403

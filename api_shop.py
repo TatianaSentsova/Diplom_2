@@ -16,6 +16,11 @@ class ApiBodyBuilder:
                            "password": password}
         return login_pass_body
 
+    @staticmethod
+    def order_body(ingredients):
+        order_body = {"ingredients": ingredients}
+        return order_body
+
 
 class ApiRequests:
     @staticmethod
@@ -36,3 +41,9 @@ class ApiRequests:
     def delete_user(token):
         return requests.delete(f'{Url.STELLAR_BURGERS_URL}{Url.ENDPOINT_USER}',
                                headers={'Authorization': token})
+
+    @staticmethod
+    def create_order(token, order_body):
+        return requests.post(f'{Url.STELLAR_BURGERS_URL}{Url.ENDPOINT_ORDER}',
+                             headers={'Authorization': token},
+                             json=order_body)

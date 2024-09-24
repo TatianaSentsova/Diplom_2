@@ -2,7 +2,6 @@ import pytest
 import allure
 from api_shop import ApiRequests, ApiBodyBuilder
 from data import ResponseMessage
-from fake_data import FakeData
 
 
 class TestChangingUserData:
@@ -18,7 +17,7 @@ class TestChangingUserData:
 
     @allure.title("Невозможно измененить данные пользователя без авторизации")
     @pytest.mark.parametrize('field', ['email', 'password', 'name'])
-    def test_changing_user_data_without_sign_in(self, authorized_user, field):
+    def test_changing_user_data_without_sign_in_failed(self, authorized_user, field):
         body = ApiBodyBuilder.build_user_body(authorized_user.email, authorized_user.password, authorized_user.name)
         error_data = f'{body[field]}f'
         body[field] = error_data
