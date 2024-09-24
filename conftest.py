@@ -20,6 +20,7 @@ def request_user_body():
 
 
 @allure.step('Создаем пользователя и получаем кортеж с данными пользователя')
+@pytest.fixture
 def new_user():
     email = FakeData.email()
     password = FakeData.password()
