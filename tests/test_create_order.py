@@ -4,36 +4,49 @@ from api_shop import ApiRequests, ApiBodyBuilder
 from data import Ingredients, ResponseMessage
 
 
+@allure.suite('Создание заказа')
 class TestCreateOrder:
-    @allure.title("Cоздания заказа c ингредиентами для авторизованного пользователя")
+    @allure.title('Cоздание заказа c ингредиентами для авторизованного пользователя')
+    @allure.description('''Направляем запрос на создание и авторизацию пользователя. Получив токен авторизации, 
+                        направляем запрос на создание заказа с полным набором валидных данных (хэш ингредиентов).
+                        В ответе проверяем код и тело ответа. Созданного пользователя удаляем из базы после теста.''')
     @pytest.mark.parametrize('ingredients', [[Ingredients.BUN],
                                              [Ingredients.BUN, Ingredients.INGREDIENT],
                                              [Ingredients.BUN, Ingredients.INGREDIENT, Ingredients.INGREDIENT]])
-    def test_create_order(self, authorized_user, ingredients):
+    def test_create_order_with_sign_in(self, authorized_user, ingredients):
         order_body = ApiBodyBuilder.order_body(ingredients)
         response = ApiRequests.create_order(authorized_user.token, order_body)
         assert response.status_code == 200
         assert response.json()['success']
 
-    @allure.title("Cоздания заказа c ингредиентами для неавторизованного пользователя")
+    @allure.title('Cоздание заказа c ингредиентами для неавторизованного пользователя')
+    @allure.description('''Создаем пользователя. Направляем запрос на создание заказа с полным набором валидных данных
+                        (хэш ингредиентов) без передачи токена авторизации. В ответе проверяем код и тело ответа. 
+                        Созданного пользователя удаляем из базы после теста.''')
     @pytest.mark.parametrize('ingredients', [[Ingredients.BUN],
                                              [Ingredients.BUN, Ingredients.INGREDIENT],
                                              [Ingredients.BUN, Ingredients.INGREDIENT, Ingredients.INGREDIENT]])
     def test_create_order_without_sign_in(self, authorized_user, ingredients):
         order_body = ApiBodyBuilder.order_body(ingredients)
-        token = ''
-        response = ApiRequests.create_order(token, order_body)
+        without_token = ''
+        response = ApiRequests.create_order(without_token, order_body)
         assert response.status_code == 200
         assert response.json()['success']
 
-    @allure.title("Создание заказа без ингрeдиентов")
+    @allure.title('Создание заказа без ингрeдиентов')
+    @allure.description('''Направляем запрос на создание и авторизацию пользователя. Направляем запрос на создание
+                        заказа без ингредиентов. В ответе проверяем код и тело ответа.Cозданного пользователя 
+                        удаляем из базы после теста.''')
     def test_create_order_without_ingredients(self, authorized_user):
         order_body = ApiBodyBuilder.order_body([])
         response = ApiRequests.create_order(authorized_user.token, order_body)
         assert response.status_code == 400
         assert response.json() == ResponseMessage.INGREDIENTS_MUST_BE_PROVIDED
 
-    @allure.title("Создание заказа с неправильным id ингрeдиента")
+    @allure.title('Создание заказа с неправильным id ингрeдиента')
+    @allure.description('''Направляем запрос на создание и авторизацию пользователя. Направляем запрос на создание
+                            заказа с невалидными данными (хэш ингредиента). В ответе проверяем код и тело ответа.
+                            Cозданного пользователя удаляем из базы после теста.''')
     def test_create_order_error_id_ingredient(self, authorized_user):
         order_body = ApiBodyBuilder.order_body([f'{Ingredients.INGREDIENT}f'])
         response = ApiRequests.create_order(authorized_user.token, order_body)

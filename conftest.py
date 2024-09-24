@@ -1,9 +1,11 @@
 import pytest
+import allure
 from fake_data import FakeData
 from api_shop import ApiRequests, ApiBodyBuilder
 from collections import namedtuple
 
 
+@allure.step('Получаем тело запроса с валидными данными для создания пользователя')
 @pytest.fixture
 def request_user_body():
     email = FakeData.email()
@@ -17,7 +19,7 @@ def request_user_body():
     ApiRequests.delete_user(token)
 
 
-@pytest.fixture
+@allure.step('Создаем пользователя и получаем кортеж с данными пользователя')
 def new_user():
     email = FakeData.email()
     password = FakeData.password()
@@ -32,6 +34,7 @@ def new_user():
     ApiRequests.delete_user(token)
 
 
+@allure.step('Создаем пользователя, получаем кортеж с токеном авторизации и данными пользователя')
 @pytest.fixture
 def authorized_user():
     email = FakeData.email()

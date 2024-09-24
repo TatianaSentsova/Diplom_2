@@ -2,7 +2,7 @@ import random
 
 
 class Url:
-    STELLAR_BURGERS_URL = 'https://stellarburgers.nomoreparties.site/'
+    STELLAR_BURGERS_URL = 'https://stellarburgers.nomoreparties.site'
     ENDPOINT_CREATING_USER = '/api/auth/register'
     ENDPOINT_LOGIN = '/api/auth/login'
     ENDPOINT_USER = '/api/auth/user'
