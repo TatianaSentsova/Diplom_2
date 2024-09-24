@@ -20,13 +20,19 @@ class ApiBodyBuilder:
 class ApiRequests:
     @staticmethod
     def create_user(body_user):
-        return requests.post(f'{Url.STELLAR_BURGERS_URL}{Url.ENDPOINT_USER}', json=body_user)
+        return requests.post(f'{Url.STELLAR_BURGERS_URL}{Url.ENDPOINT_CREATING_USER}', json=body_user)
 
     @staticmethod
     def login_user(login_pass):
         return requests.post(f'{Url.STELLAR_BURGERS_URL}{Url.ENDPOINT_LOGIN}', data=login_pass)
 
     @staticmethod
+    def changing_data_user(token, changing_body):
+        return requests.patch(f'{Url.STELLAR_BURGERS_URL}{Url.ENDPOINT_USER}',
+                              headers={'Authorization': token},
+                              json=changing_body)
+
+    @staticmethod
     def delete_user(token):
-        return requests.delete(f'{Url.STELLAR_BURGERS_URL}{Url.ENDPOINT_DELETE_USER}',
+        return requests.delete(f'{Url.STELLAR_BURGERS_URL}{Url.ENDPOINT_USER}',
                                headers={'Authorization': token})

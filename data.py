@@ -1,8 +1,8 @@
 class Url:
     STELLAR_BURGERS_URL = 'https://stellarburgers.nomoreparties.site/'
-    ENDPOINT_USER = '/api/auth/register'
+    ENDPOINT_CREATING_USER = '/api/auth/register'
     ENDPOINT_LOGIN = '/api/auth/login'
-    ENDPOINT_DELETE_USER = '/api/auth/user'
+    ENDPOINT_USER = '/api/auth/user'
 
 
 class ResponseMessage:
@@ -12,3 +12,5 @@ class ResponseMessage:
                                   "message": "Email, password and name are required fields"}
     EMAIL_OR_PASSWORD_ARE_INCORRECT = {"success": False,
                                        "message": "email or password are incorrect"}
+    YOU_SHOULD_BE_AUTHORISED = {"success": False,
+                                "message": "You should be authorised"}
