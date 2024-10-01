@@ -3,49 +3,35 @@ import allure
 from fake_data import FakeData
 from api_shop import ApiRequests, ApiBodyBuilder
 from collections import namedtuple
+from data import Ingredients
 
 
-@allure.step('Получаем тело запроса с валидными данными для создания пользователя')
+@allure.step('Получаем данные для создания пользователя. Финализатор с удалением пользователя')
 @pytest.fixture
-def request_user_body():
+def user_data():
     email = FakeData.email()
     password = FakeData.password()
     name = FakeData.name()
-    user_body = ApiBodyBuilder.build_user_body(email, password, name)
-    login_pass_body = ApiBodyBuilder.build_login_pass_body(email, password)
-    yield user_body
+    array = [email, password, name]
+    yield array
+    login_pass_body = ApiBodyBuilder.build_login_pass_body(array[0], array[1])
     response = ApiRequests.login_user(login_pass_body)
     token = response.json()['accessToken']
     ApiRequests.delete_user(token)
 
 
-@allure.step('Создаем пользователя и получаем кортеж с данными пользователя')
+@allure.step('Создаем пользователя и передаем в тесты токен авторизации')
 @pytest.fixture
-def new_user():
-    email = FakeData.email()
-    password = FakeData.password()
-    name = FakeData.name()
-    user_body = ApiBodyBuilder.build_user_body(email, password, name)
-    ApiRequests.create_user(user_body)
-    UserData = namedtuple('UserData', ['email', 'password', 'name'])
-    yield UserData(email, password, name)
-    login_pass_body = ApiBodyBuilder.build_login_pass_body(email, password)
-    response = ApiRequests.login_user(login_pass_body)
+def new_user(user_data):
+    user_body = ApiBodyBuilder.build_user_body(user_data[0], user_data[1], user_data[2])
+    response = ApiRequests.create_user(user_body)
     token = response.json()['accessToken']
-    ApiRequests.delete_user(token)
+    UserToken = namedtuple('UserToken', ['token'])
+    return UserToken(token)
 
 
-@allure.step('Создаем пользователя, получаем кортеж с токеном авторизации и данными пользователя')
+@allure.step('Создаем заказ')
 @pytest.fixture
-def authorized_user():
-    email = FakeData.email()
-    password = FakeData.password()
-    name = FakeData.name()
-    user_body = ApiBodyBuilder.build_user_body(email, password, name)
-    ApiRequests.create_user(user_body)
-    login_pass_body = ApiBodyBuilder.build_login_pass_body(email, password)
-    response = ApiRequests.login_user(login_pass_body)
-    token = response.json()['accessToken']
-    UserData = namedtuple('UserData', ['email', 'password', 'name', 'token'])
-    yield UserData(email, password, name, token)
-    ApiRequests.delete_user(token)
+def create_order(new_user):
+    order_body = ApiBodyBuilder.order_body([Ingredients.INGREDIENT])
+    return ApiRequests.create_order(new_user.token, order_body)

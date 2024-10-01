@@ -8,20 +8,22 @@ from fake_data import FakeData
 @allure.suite('Проверка создания пользователя.')
 class TestCreatingUser:
     @allure.title('Успешное создание пользователя при заполнении всех полей')
-    @allure.description('''Направляем запрос на создание пользователя с полным набором валидных данных. В ответе проверяем 
-                        код и тело ответа. Созданного пользователя удаляем из базы после теста.''')
-    def test_creating_new_user(self, request_user_body):
-        response = ApiRequests.create_user(request_user_body)
+    @allure.description('''Направляем запрос на создание пользователя с полным набором валидных данных. В ответе 
+                        проверяем код и тело ответа. Созданного пользователя удаляем из базы после теста.''')
+    def test_creating_new_user(self, user_data):
+        user_body = ApiBodyBuilder.build_user_body(user_data[0], user_data[1], user_data[2])
+        response = ApiRequests.create_user(user_body)
         assert response.status_code == 200
         assert response.json()['success']
 
     @allure.title('Невозможно создать пользователя, который уже зарегистрирован')
     @allure.description('''Поочередно направляем два запроса на создание пользователя с одинаковым набором валидных 
                         данных. В ответе проверяем код и тело ответа. Созданного пользователя удаляем из базы
-                         после теста.''')
-    def test_creating_same_user(self, request_user_body):
-        ApiRequests.create_user(request_user_body)
-        response = ApiRequests.create_user(request_user_body)
+                        после теста.''')
+    def test_creating_same_user(self, user_data):
+        user_body = ApiBodyBuilder.build_user_body(user_data[0], user_data[1], user_data[2])
+        ApiRequests.create_user(user_body)
+        response = ApiRequests.create_user(user_body)
         assert response.status_code == 403
         assert response.json() == ResponseMessage.USER_ALREADY_EXISTS
 
